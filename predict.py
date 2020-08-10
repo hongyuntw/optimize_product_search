@@ -12,11 +12,11 @@ import gensim
 
 
 
-WORDMODEL_PATH = './wordmodel.model'
+WORDMODEL_PATH = './model/wordmodel.model'
 wordmodel = gensim.models.Word2Vec.load(WORDMODEL_PATH)
 
 LM_PATH = './chinese_wwm_pytorch/'
-check_point = './bert_product_keyword_binary_model_filter_60k12.pkl'
+check_point = './model/bert_product_keyword_binary_model_filter_60k12'
 
 
 

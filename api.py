@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import utils
 from predict import find_product_keywords
-
+from ckiptagger import NER, POS, WS , data_utils , construct_dictionary
 
 
 app = Flask(__name__)
@@ -17,8 +17,8 @@ def mytest():
     return "testing...."
 
 
-@app.route("/product_keyrwords", methods=["POST"])
-def product_keyrwords():
+@app.route("/product_keywords", methods=["POST"])
+def product_keywords():
     data = request.get_json(force=True)
 
     product_name = data["productName"]
@@ -30,12 +30,12 @@ def product_keyrwords():
     )
 
 # ckip part
-from ckiptagger import NER, POS, WS
+
 ws = WS("./data", disable_cuda=False)
 pos = POS("./data", disable_cuda=False)
 ner = NER("./data", disable_cuda=False)
 
-supplier_df = pd.read_excel('關鍵字和供應商.xlsx',sheet_name = '品名和廠商')
+supplier_df = pd.read_excel('./關鍵字和供應商.xlsx',sheet_name = '品名和廠商')
 supplier_word = supplier_df['廠商'].apply(clean_supplier_name).tolist()
 supplier_word = list(set(supplier_word))
 mydict = dict.fromkeys(supplier_word, 1)
@@ -45,7 +45,6 @@ def tokenlize(text):
     word_pos = pos(tokens)
     return tokens, word_pos
     
-
 
 def get_keywords(product_name):
     product_name = utils.process_text(product_name)

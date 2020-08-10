@@ -1,0 +1,5 @@
+*.xlsx
+model/
+CKIP_RESULT
+data/
+chinese_wwm_pytorch/
