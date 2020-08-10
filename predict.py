@@ -15,6 +15,9 @@ import gensim
 WORDMODEL_PATH = './wordmodel.model'
 wordmodel = gensim.models.Word2Vec.load(WORDMODEL_PATH)
 
+LM_PATH = './chinese_wwm_pytorch/'
+check_point = './bert_product_keyword_binary_model_filter_60k12.pkl'
+
 
 
 bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
@@ -31,8 +34,7 @@ bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6'
 
 
 def get_product_word_weight(t, p , test_product_name):
-    model_path  = './chinese_wwm_pytorch/'
-    tokenizer = BertTokenizer.from_pretrained(model_path)
+    tokenizer = BertTokenizer.from_pretrained(LM_PATH)
     max_seq_length = 50
 
 
@@ -106,11 +108,10 @@ def get_product_word_weight(t, p , test_product_name):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("device:", device)
 
-    model_path  = './chinese_wwm_pytorch/'
+    
     NUM_LABELS = 2
-    tokenizer = BertTokenizer.from_pretrained(model_path)
-    model = BertForSequenceClassification.from_pretrained(model_path,num_labels=NUM_LABELS)
-    check_point = './bert_product_keyword_binary_model_filter_60k12.pkl'
+    tokenizer = BertTokenizer.from_pretrained(LM_PATH)
+    model = BertForSequenceClassification.from_pretrained(LM_PATH,num_labels=NUM_LABELS)
     model.load_state_dict(torch.load(check_point))
     model = model.to(device)
     model.eval()
