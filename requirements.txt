@@ -4,3 +4,5 @@ mysqlclient
 requests
 torch
 transformers
+pandas
+numpy
