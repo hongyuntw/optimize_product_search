@@ -54,7 +54,7 @@ def tokenlize(text):
 
 
 @app.route("/product_tokens", methods=["POST"])
-def product_keywords():
+def product_tokens():
     data = request.get_json(force=True)
 
     product_name = data["productName"]
