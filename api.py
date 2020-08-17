@@ -11,6 +11,16 @@ app = Flask(__name__)
 CORS(app)
 
 
+ws = WS("./data", disable_cuda=False)
+pos = POS("./data", disable_cuda=False)
+ner = NER("./data", disable_cuda=False)
+supplier_df = pd.read_excel('./關鍵字和供應商.xlsx',sheet_name = '品名和廠商')
+supplier_word = supplier_df['廠商'].apply(clean_supplier_name).tolist()
+supplier_word = list(set(supplier_word))
+mydict = dict.fromkeys(supplier_word, 1)
+dictionary = construct_dictionary(mydict)
+
+
 @app.route('/')
 def hello_world():
     return 'Flask Dockerized'
@@ -33,21 +43,30 @@ def product_keywords():
         }
     )
 
+
+
 # ckip part
 
-ws = WS("./data", disable_cuda=False)
-pos = POS("./data", disable_cuda=False)
-ner = NER("./data", disable_cuda=False)
-
-supplier_df = pd.read_excel('./關鍵字和供應商.xlsx',sheet_name = '品名和廠商')
-supplier_word = supplier_df['廠商'].apply(clean_supplier_name).tolist()
-supplier_word = list(set(supplier_word))
-mydict = dict.fromkeys(supplier_word, 1)
-dictionary = construct_dictionary(mydict)
 def tokenlize(text):
     tokens = ws([text],recommend_dictionary = dictionary)
     word_pos = pos(tokens)
     return tokens, word_pos
+
+
+@app.route("/product_tokens", methods=["POST"])
+def product_keywords():
+    data = request.get_json(force=True)
+
+    product_name = data["productName"]
+    tokens, _pos = tokenlize(product_name)
+    tokens = tokens[0]
+    _pos = _pos[0]
+    return jsonify(
+        {
+            "pos": _pos,
+            "tokens":tokens,
+        }
+    )
     
 
 def get_keywords(product_name):
