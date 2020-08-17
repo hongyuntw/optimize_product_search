@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*
 
 from flask import Flask, jsonify, request
-#import utils
+from utils import clean_supplier_name
 #from predict import find_product_keywords
 from ckiptagger import NER, POS, WS , data_utils , construct_dictionary
-
+import pandas as pd
+from flask_cors import CORS , cross_origin
 
 app = Flask(__name__)
-
+CORS(app)
 
 
 @app.route('/')
@@ -15,6 +16,7 @@ def hello_world():
     return 'Flask Dockerized'
 
 @app.route('/testing')
+@cross_origin()
 def mytest():
     return "testing...."
 
