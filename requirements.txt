@@ -1,14 +1,11 @@
 flask
 flask_restful
-mysqlclient
 requests
 torch
 transformers
 pandas
 numpy
-tensorflow_gpu==1.15.3
 gdown
-ckiptagger
 scipy
 sklearn
 gensim

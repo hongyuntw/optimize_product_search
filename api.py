@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*
+
 from flask import Flask, jsonify, request
-import utils
-from predict import find_product_keywords
+#import utils
+#from predict import find_product_keywords
 from ckiptagger import NER, POS, WS , data_utils , construct_dictionary
 
 
