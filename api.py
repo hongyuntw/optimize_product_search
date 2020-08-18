@@ -34,6 +34,7 @@ def mytest():
 @app.route("/product_keywords", methods=["POST"])
 def product_keywords():
     data = request.get_json(force=True)
+    print(data)
 
     product_name = data["productName"]
     keywords = get_keywords(product_name)
@@ -55,9 +56,11 @@ def tokenlize(text):
 
 @app.route("/product_tokens", methods=["POST"])
 def product_tokens():
-    data = request.get_json(force=True)
-
-    product_name = data["productName"]
+    print(request.form.get('productName'))
+    product_name = request.form.get('productName')
+    #data = request.get_json(force=True)
+    #print(data)
+    #product_name = data["productName"]
     tokens, _pos = tokenlize(product_name)
     tokens = tokens[0]
     _pos = _pos[0]
