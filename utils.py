@@ -1,6 +1,6 @@
-
 import re
-
+import globals
+import numpy as np
 def remove_punctuation(text):
     punctuation = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~“”？，！【】（）」「、。：；’‘……￥·"""
     dicts={i:' ' for i in punctuation}
@@ -30,15 +30,7 @@ def strQ2B(ustring):
     return ''.join(ss)
 
 
-def clean_supplier_name(text):
-    text = str(text)
-    text = text.replace(u'\u3000', u' ').replace(u'\xa0', u' ').replace(r'\r\n','')
-    text = text.lower()
-    pos = text.find('(')
-    if pos != -1:
-        text = text[:pos]
 
-    return text
 
 
 def get_keywords(text):
@@ -62,4 +54,11 @@ def get_keywords(text):
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
     e_x = np.exp(x - np.max(x))
-    return e_x / e_x.sum(axis=0) # only difference
+    return e_x / e_x.sum(axis=0)  # only difference
+    
+
+# ckip part
+def tokenlize(text):
+    tokens = globals.ws([text],recommend_dictionary = globals.dictionary)
+    word_pos = globals.pos(tokens)
+    return tokens, word_pos

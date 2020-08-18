@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*
 
 from flask import Flask, jsonify, request
-from utils import clean_supplier_name
-#from predict import find_product_keywords
-from ckiptagger import NER, POS, WS , data_utils , construct_dictionary
+from utils import tokenlize
+import utils
+from predict import find_product_keywords
+import predict
 import pandas as pd
-from flask_cors import CORS , cross_origin
+import globals
 
 app = Flask(__name__)
-CORS(app)
 
-
-ws = WS("./data", disable_cuda=False)
-pos = POS("./data", disable_cuda=False)
-ner = NER("./data", disable_cuda=False)
-supplier_df = pd.read_excel('./關鍵字和供應商.xlsx',sheet_name = '品名和廠商')
-supplier_word = supplier_df['廠商'].apply(clean_supplier_name).tolist()
-supplier_word = list(set(supplier_word))
-mydict = dict.fromkeys(supplier_word, 1)
-dictionary = construct_dictionary(mydict)
 
 
 @app.route('/')
@@ -26,17 +17,14 @@ def hello_world():
     return 'Flask Dockerized'
 
 @app.route('/testing')
-@cross_origin()
 def mytest():
     return "testing...."
 
 
 @app.route("/product_keywords", methods=["POST"])
 def product_keywords():
-    data = request.get_json(force=True)
-    print(data)
-
-    product_name = data["productName"]
+    print(request.form.get('productName'))
+    product_name = request.form.get('productName')
     keywords = get_keywords(product_name)
     return jsonify(
         {
@@ -46,21 +34,13 @@ def product_keywords():
 
 
 
-# ckip part
-
-def tokenlize(text):
-    tokens = ws([text],recommend_dictionary = dictionary)
-    word_pos = pos(tokens)
-    return tokens, word_pos
-
 
 @app.route("/product_tokens", methods=["POST"])
 def product_tokens():
     print(request.form.get('productName'))
     product_name = request.form.get('productName')
-    #data = request.get_json(force=True)
-    #print(data)
-    #product_name = data["productName"]
+    product_name = utils.process_text(product_name)
+
     tokens, _pos = tokenlize(product_name)
     tokens = tokens[0]
     _pos = _pos[0]
@@ -70,13 +50,15 @@ def product_tokens():
             "tokens":tokens,
         }
     )
-    
+
 
 def get_keywords(product_name):
     product_name = utils.process_text(product_name)
-    return predict.find_product_keywords(p_name)
-
+    keywords = predict.find_product_keywords(product_name)
+    print(keywords)
+    return keywords
 
 
 if __name__ == "__main__":
+    globals.initialize()
     app.run(debug=False, host='0.0.0.0', port=8787)

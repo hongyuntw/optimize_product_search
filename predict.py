@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 
 import torch
 import torch.nn.functional as F
@@ -9,6 +10,8 @@ from transformers import BertForSequenceClassification, BertForPreTraining
 import utils
 from torch import nn
 import gensim
+from utils import tokenlize
+import numpy as np
 
 
 
@@ -16,21 +19,13 @@ WORDMODEL_PATH = './model/wordmodel.model'
 wordmodel = gensim.models.Word2Vec.load(WORDMODEL_PATH)
 
 LM_PATH = './chinese_wwm_pytorch/'
-check_point = './model/bert_product_keyword_binary_model_filter_60k12'
+check_point = './model/bert_product_keyword_binary_model_filter_60k12.pkl'
 
 
 
 bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
 bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb' ,'入組']
 
-
-
-
-# def is_any_substring_in_list(all_product_keywodrs , keyword):
-#     for already_exist_keyword in all_product_keywodrs:
-#         if already_exist_keyword in keyword:
-#             return already_exist_keyword
-#     return keyword
 
 
 def get_product_word_weight(t, p , test_product_name):
@@ -106,13 +101,15 @@ def get_product_word_weight(t, p , test_product_name):
 
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = 'cpu'
     print("device:", device)
 
     
     NUM_LABELS = 2
     tokenizer = BertTokenizer.from_pretrained(LM_PATH)
-    model = BertForSequenceClassification.from_pretrained(LM_PATH,num_labels=NUM_LABELS)
-    model.load_state_dict(torch.load(check_point))
+    model = BertForSequenceClassification.from_pretrained(LM_PATH, num_labels=NUM_LABELS)
+    checkpoint_state_dict = torch.load(check_point , map_location=torch.device('cpu'))
+    model.load_state_dict(checkpoint_state_dict)
     model = model.to(device)
     model.eval()
 
@@ -160,7 +157,6 @@ def find_product_keywords(p_name):
         if word in wordmodel.wv.vocab:
             top_similar = wordmodel.wv.most_similar(word,topn=topk)
 
-            top_similar = [(is_any_substring_in_list(all_product_keywodrs,x) , y) for x , y in top_similar]
 
 
             print(top_similar)
