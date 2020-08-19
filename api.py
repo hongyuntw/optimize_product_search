@@ -10,6 +10,7 @@ import gdown
 import sys
 import argparse
 import prepare_data
+from train_word2vec import train_word2vec
 
 
 app = Flask(__name__)
@@ -58,6 +59,16 @@ def update_ckip_dict():
     return jsonify(
         {
             "ckip_word_dict": ckip_word_dict
+        }
+    )
+
+
+@app.route("/train_word2vec", methods=["POST"])
+def train_word2vec_api():
+    success = train_word2vec()
+    return jsonify(
+        {
+            "success": success
         }
     )
 

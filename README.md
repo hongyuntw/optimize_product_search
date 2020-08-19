@@ -49,7 +49,9 @@ methods=["POST"]
 ### /update_ckip_dict
 methods=["POST"]
 #### parameters
+```
 None
+```
 
 #### return 
 ```
@@ -69,4 +71,17 @@ methods=["POST"]
 #### return 
 ```
 "synonyms" : a list has topk  synonyms of the word , each element contain string and value, the value means how similar between them. If return list is empty, maybe the word is not in our vocabs or the topk is not an integer.
+```
+
+### /train_word2vec
+
+methods=["POST"]
+#### parameters
+```
+None
+```
+
+#### return 
+```
+"success" : boolean
 ```
