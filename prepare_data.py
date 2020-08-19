@@ -19,7 +19,7 @@ def get_train_data():
     base_path = './train_data/'
     for filename in globals.train_data_filenames:
         data_path = base_path + filename
-        with open(data_path,'r') as f:
+        with open(data_path,'r',encoding='utf-8') as f:
             product_name_with_isbn = f.readline()
             product_token_result = f.readline()
             token_label = f.readline()

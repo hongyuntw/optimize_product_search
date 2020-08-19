@@ -116,9 +116,9 @@ def get_product_word_weight(t, p, test_product_name):
     with torch.no_grad():
         for data in testloader:
             tokens_tensors, segments_tensors, masks_tensors = [t.to(device) for t in data]
-            outputs = model(input_ids=tokens_tensors, 
-                                token_type_ids=segments_tensors, 
-                                attention_mask=masks_tensors)
+            outputs = model(input_ids=tokens_tensors.long(), 
+                                token_type_ids=segments_tensors.long(), 
+                                attention_mask=masks_tensors.long())
             pred = torch.softmax(outputs[0] , dim = -1)
             # pred = torch.softmax(pred, dim = 0)
             pred = pred.cpu().detach().numpy()
