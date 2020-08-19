@@ -19,6 +19,7 @@ python api.py [--download]
 ## api
 
 ### /product_tokens
+do tokenlize on product name and return part of speech and token
 
 methods=["POST"]
 #### parameters
@@ -32,9 +33,9 @@ methods=["POST"]
 "tokens" : the list of ckip result 
 ```
 ### /product_keywords
+base on product name find it's keyword
 
 methods=["POST"]
-
 #### parameters
 
 ```
@@ -47,6 +48,9 @@ methods=["POST"]
 ```
 
 ### /update_ckip_dict
+
+use /train_data/product_tokens*.txt data construce a new ckiptagger  recommend dictionary and save it in /train_data/ckip_word_dict.pkl
+
 methods=["POST"]
 #### parameters
 ```
