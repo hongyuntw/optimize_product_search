@@ -1,7 +1,16 @@
-## api
+# search api system
 
 
-### start server
+## setup
+
+```
+pip install -r requirements.txt
+````
+
+
+
+
+## start server
 ```
 python api.py [--download]
 ````
