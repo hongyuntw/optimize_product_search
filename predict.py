@@ -15,20 +15,20 @@ import numpy as np
 
 
 
-WORDMODEL_PATH = './model/wordmodel.model'
-wordmodel = gensim.models.Word2Vec.load(WORDMODEL_PATH)
 
-LM_PATH = './chinese_wwm_pytorch/'
-check_point = './model/bert_product_keyword_binary_model_filter_60k12.pkl'
+
+
 
 
 
 bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
 bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb' ,'入組']
+LM_PATH = './chinese_wwm_pytorch/'
 
 
 
-def get_product_word_weight(t, p , test_product_name):
+def get_product_word_weight(t, p, test_product_name):
+    from globals import check_point , wordmodel
     tokenizer = BertTokenizer.from_pretrained(LM_PATH)
     max_seq_length = 50
 
@@ -108,7 +108,11 @@ def get_product_word_weight(t, p , test_product_name):
     NUM_LABELS = 2
     tokenizer = BertTokenizer.from_pretrained(LM_PATH)
     model = BertForSequenceClassification.from_pretrained(LM_PATH, num_labels=NUM_LABELS)
-    checkpoint_state_dict = torch.load(check_point , map_location=torch.device('cpu'))
+    try:
+        checkpoint_state_dict = torch.load(check_point, map_location=torch.device('cpu'))
+    except:
+        checkpoint_state_dict = torch.jit.load(check_point, map_location=torch.device('cpu'))
+    
     model.load_state_dict(checkpoint_state_dict)
     model = model.to(device)
     model.eval()
@@ -128,6 +132,7 @@ def get_product_word_weight(t, p , test_product_name):
 
 
 def find_product_keywords(p_name):
+    from globals import check_point , wordmodel
     similar_dict = {}
     p_name = utils.process_text(p_name)
     t, p  = tokenlize(p_name)
@@ -174,8 +179,6 @@ def find_product_keywords(p_name):
                     similar_dict[similar_word] += value * weight
                 else:
                     similar_dict[similar_word] = value * weight
-
-
 
 
     return sorted(similar_dict.items(), key=lambda x: x[1], reverse=True)[:6]

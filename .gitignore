@@ -6,3 +6,6 @@ chinese_wwm_pytorch/
 !*.py
 data.zip
 __pycache__/
+*.zip
+*.pkl
+

@@ -2,6 +2,7 @@
 
 from ckiptagger import NER, POS, WS , data_utils , construct_dictionary
 import pandas as pd
+import gensim
 
 def clean_supplier_name(text):
     text = str(text)
@@ -27,3 +28,10 @@ def initialize():
     mydict = dict.fromkeys(supplier_word, 1)
     global dictionary
     dictionary = construct_dictionary(mydict)
+#  model checkpoint 
+    WORDMODEL_PATH = './model/wordmodel.model'
+    global wordmodel
+    wordmodel = gensim.models.Word2Vec.load(WORDMODEL_PATH)
+
+    global check_point
+    check_point = './model/product_weight_model.pkl'

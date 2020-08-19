@@ -7,9 +7,12 @@ from predict import find_product_keywords
 import predict
 import pandas as pd
 import globals
+import gdown
+import sys
+import argparse
+
 
 app = Flask(__name__)
-
 
 
 @app.route('/')
@@ -60,5 +63,20 @@ def get_keywords(product_name):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--download', help='download word model' , required=False , default = False , action = 'store_true')
+    args = parser.parse_args()
+
+    if args.download:
+    #   when start server , download latest model from google drive
+        wordmodel_url = 'https://drive.google.com/uc?export=download&id=1-2c6BIK328VF9MKYLhyQ7ZkYOm0OZZKh'
+        wordmodel_path = './model/wordmodel.model'
+        gdown.download(wordmodel_url, wordmodel_path, quiet=False)
+
+        product_weight_model_url = 'https://drive.google.com/uc?export=download&id=10gIvMu9CwIV5b0eX0ClM13I2slAjdxfr'
+        product_weight_path = './model/product_weight_model.pkl'
+        gdown.download(product_weight_model_url, product_weight_path, quiet=False)
+
+
     globals.initialize()
     app.run(debug=False, host='0.0.0.0', port=8787)
