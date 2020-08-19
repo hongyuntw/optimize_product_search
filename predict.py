@@ -16,11 +16,6 @@ import numpy as np
 
 
 
-
-
-
-
-
 bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
 bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb' ,'入組']
 LM_PATH = './chinese_wwm_pytorch/'
@@ -137,12 +132,12 @@ def find_product_keywords(p_name):
     p_name = utils.process_text(p_name)
     t, p  = tokenlize(p_name)
 
-    t = t[0]
-    newt = []
-    for _t in t:
-        newt.append(_t.replace(' ',''))
-    t = newt
-    p = p[0]
+    # t = t[0]
+    # newt = []
+    # for _t in t:
+    #     newt.append(_t.replace(' ',''))
+    # t = newt
+    # p = p[0]
 
     pred , t , p = get_product_word_weight(t , p , p_name )
 
@@ -162,11 +157,8 @@ def find_product_keywords(p_name):
         if word in wordmodel.wv.vocab:
             top_similar = wordmodel.wv.most_similar(word,topn=topk)
 
-
-
             print(top_similar)
             
-
             top_similar_word = [x[0] for x in top_similar]
             top_similar_val = [x[1] for x in top_similar]
 

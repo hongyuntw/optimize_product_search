@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*
-
 from flask import Flask, jsonify, request
 from utils import tokenlize
 import utils
@@ -10,6 +9,7 @@ import globals
 import gdown
 import sys
 import argparse
+import prepare_data
 
 
 app = Flask(__name__)
@@ -36,23 +36,31 @@ def product_keywords():
     )
 
 
-
-
 @app.route("/product_tokens", methods=["POST"])
 def product_tokens():
     print(request.form.get('productName'))
     product_name = request.form.get('productName')
     product_name = utils.process_text(product_name)
-
     tokens, _pos = tokenlize(product_name)
-    tokens = tokens[0]
-    _pos = _pos[0]
+
     return jsonify(
         {
             "pos": _pos,
             "tokens":tokens,
         }
     )
+
+@app.route("/update_ckip_dict", methods=["POST"])
+def update_ckip_dict():
+
+    ckip_word_dict = prepare_data.update_ckip_dict()
+
+    return jsonify(
+        {
+            "ckip_word_dict": ckip_word_dict
+        }
+    )
+
 
 
 def get_keywords(product_name):
@@ -73,7 +81,7 @@ if __name__ == "__main__":
         wordmodel_path = './model/wordmodel.model'
         gdown.download(wordmodel_url, wordmodel_path, quiet=False)
 
-        product_weight_model_url = 'https://drive.google.com/uc?export=download&id=10gIvMu9CwIV5b0eX0ClM13I2slAjdxfr'
+        product_weight_model_url = 'https://drive.google.com/uc?export=download&id=1-NPr3f5RgNBHDzMSdl_a8oNWrOfP6dLs'
         product_weight_path = './model/product_weight_model.pkl'
         gdown.download(product_weight_model_url, product_weight_path, quiet=False)
 

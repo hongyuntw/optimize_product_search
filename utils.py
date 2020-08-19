@@ -57,8 +57,25 @@ def softmax(x):
     return e_x / e_x.sum(axis=0)  # only difference
     
 
+
+
+
+
+
 # ckip part
 def tokenlize(text):
     tokens = globals.ws([text],recommend_dictionary = globals.dictionary)
     word_pos = globals.pos(tokens)
-    return tokens, word_pos
+
+    new_tokens = []
+    new_pos = []
+    for i in range(len(tokens[0])):
+        _t = tokens[0][i]
+        _p = word_pos[0][i]
+        _t = _t.replace(' ', '')
+        if _t == '':
+            continue
+        new_tokens.append(_t)
+        new_pos.append(_p)
+
+    return new_tokens, new_pos
