@@ -20,7 +20,6 @@ python api.py [--download]
 
 ### /product_tokens
 
-
 methods=["POST"]
 #### parameters
 productName : {string}
@@ -51,5 +50,13 @@ ckip_word_dict : newest ckiptagger  recommend dictionary
 
 
 
+### /get_synonyms
 
+methods=["POST"]
+#### parameters
+word : {string}
+topk : {int}
+
+#### return 
+synonyms : a list contain topk elements of the word's synonyms , each element contain string and value, the value means how similar between them. If return value is empty, maybe the word is not in our vocabs or the topk is not an integer.
 

@@ -2,7 +2,7 @@
 from flask import Flask, jsonify, request
 from utils import tokenlize
 import utils
-from predict import find_product_keywords
+from predict import find_product_keywords , get_synonyms
 import predict
 import pandas as pd
 import globals
@@ -61,6 +61,23 @@ def update_ckip_dict():
         }
     )
 
+
+@app.route("/get_synonyms", methods=["POST"])
+def get_synonyms():
+
+    word = request.form.get('word')
+    topk = request.form.get('topk')
+    print(word, topk)
+
+    word = utils.process_text(word)
+    
+    synonyms = predict.get_synonyms(word,topk)
+
+    return jsonify(
+        {
+            "synonyms": synonyms
+        }
+    )
 
 
 def get_keywords(product_name):

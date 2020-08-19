@@ -177,3 +177,15 @@ def find_product_keywords(p_name):
 
 
 
+
+def get_synonyms(word, topk):
+    from globals import wordmodel
+    try:
+        topk = int(topk)
+        synonyms = wordmodel.wv.most_similar(word, topn=topk)
+        return synonyms
+    except Exception as e:
+        print(e)
+        return []
+    
+    
