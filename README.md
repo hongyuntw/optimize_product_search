@@ -74,6 +74,7 @@ methods=["POST"]
 ```
 
 ### /train_word2vec
+use /train_data/word2vec_train_corpus.pkl to re-train a word2vec model and save it to /model/wordmodel.model
 
 methods=["POST"]
 #### parameters
