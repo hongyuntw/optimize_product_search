@@ -8,4 +8,4 @@ data.zip
 __pycache__/
 *.zip
 *.pkl
-
+Dockerfile

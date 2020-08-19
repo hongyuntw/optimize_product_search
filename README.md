@@ -15,4 +15,4 @@ pip install -r requirements.txt
 python api.py [--download]
 ````
 
---download will downlad model from google drive
+--download will downlad word2vec model and bert binary classifier model from google drive
