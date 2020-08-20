@@ -109,10 +109,10 @@ def train_bert():
         for (i,data) in enumerate(trainloader):
             tokens_tensors, segments_tensors, masks_tensors, labels = [t.to(device) for t in data]
             optimizer.zero_grad()
-            outputs = model(input_ids=tokens_tensors, 
-                                token_type_ids = segments_tensors, 
-                                attention_mask = masks_tensors, 
-                                labels=labels)
+            outputs = model(input_ids=tokens_tensors.long(), 
+                                token_type_ids = segments_tensors.long(), 
+                                attention_mask = masks_tensors.long(), 
+                                labels=labels.long())
             loss = outputs[0]
 
             pred = outputs[1]
