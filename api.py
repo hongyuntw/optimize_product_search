@@ -87,6 +87,7 @@ def add_product_api():
 
 
 
+# call this will init
 @app.route("/get_ckip_dict", methods=["POST"])
 def get_ckip_dict_base_on_file_api():
 
@@ -94,7 +95,7 @@ def get_ckip_dict_base_on_file_api():
 
     return jsonify(
         {
-             dict(sorted(dict(ckip_word_dict).items(), key=lambda x: x[1], reverse=True))
+             dict(sorted(ckip_word_dict.items(), key=lambda x: x[1], reverse=True))
         }
     )
 

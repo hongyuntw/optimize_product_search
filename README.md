@@ -54,9 +54,9 @@ example productNanme : 好穿的褲子
 }
 ```
 
-### /update_ckip_dict
+### /get_ckip_dict
 
-use /train_data/product_tokens*.txt data construce a new ckiptagger  recommend dictionary and save it in /train_data/ckip_word_dict.pkl
+回傳server端 ckip word dict，若server端也沒有會initial一個ckip word dict
 
 methods=["POST"]
 #### parameters
@@ -66,7 +66,7 @@ None
 
 #### return 
 ```
-"ckip_word_dict" : newest ckiptagger  recommend dictionary
+a dictionary
 ```
 
 
@@ -75,13 +75,13 @@ None
 methods=["POST"]
 #### parameters
 ```
-"word" : string,
+"words" : list of string,
 "topk" : int,
 ```
 
 #### return 
 example 
-word : 長褲
+words : ["長褲","睡褲","童裝"]
 topk : 10
 ```
 {
@@ -96,6 +96,7 @@ topk : 10
     "大款": 0.7885699272155762,
     "印刷": 0.7802867293357849
 }
+對list中的每個word找出topk個相似詞，若有重複則取代
 ```
 
 ### /train_word2vec
@@ -119,6 +120,50 @@ methods=["POST"]
 #### parameters
 ```
 None
+```
+#### return 
+```
+"success" : boolean
+```
+
+
+
+### /save_product_tokens
+
+methods=["POST"]
+#### parameters
+```
+productName : (string)比利時ACE Q軟糖48g(多口味可選)
+tokens : {
+    "比利時": false,
+    "ace": false,
+    "q": false,
+    "軟糖": true,
+    "48g": false,
+    "多口味": false,
+    "可選": false
+}
+
+會分別存入 train_data (優化 bert 權重判斷 model) call /train_bert
+斷詞 ckip word dict (優化斷詞，進而優化單字找相似詞 word2vec model)
+```
+#### return 
+```
+"success" : boolean
+```
+
+### /add_product
+methods=["POST"]
+#### parameters
+```
+isbn : string
+productName : string
+keywords : string
+category : string
+
+存入e7Line商品.csv裡面，目的是當斷詞資料搜集夠多，要進行優化時call /train_word2vec，對裡面每個商品重新斷詞，重新train word2vec model
+
+
 ```
 #### return 
 ```

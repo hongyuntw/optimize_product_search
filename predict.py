@@ -144,7 +144,7 @@ def find_product_keywords(p_name):
     # print(pred)
     print(t)
 
-    topk = 5
+    topk = 10
     for k in range(len(t)):
         print(pred[k],end='\t')
         print(t[k],end='\t' )
@@ -173,7 +173,7 @@ def find_product_keywords(p_name):
                     similar_dict[similar_word] = value * weight
 
 
-    return sorted(similar_dict.items(), key=lambda x: x[1], reverse=True)[:6]
+    return sorted(similar_dict.items(), key=lambda x: x[1], reverse=True)[:-1]
 
 
 
