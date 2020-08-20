@@ -93,10 +93,9 @@ def get_ckip_dict_base_on_file_api():
 
     ckip_word_dict = prepare_data.get_ckip_dict_base_on_file()
 
+
     return jsonify(
-        {
-             dict(sorted(ckip_word_dict.items(), key=lambda x: x[1], reverse=True))
-        }
+        dict(sorted(ckip_word_dict.items(), key=lambda x: x[1], reverse=True))
     )
 
 
