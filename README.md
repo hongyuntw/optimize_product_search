@@ -43,8 +43,15 @@ methods=["POST"]
 ```
 
 #### return 
+example productNanme : 好穿的褲子
 ```
-"keywords" : a list , every element in list contains keyword and value , the value means how close between keyword and product
+{
+    "九分褲": 0.8544809506246054,
+    "嬰兒褲": 0.8439397150800687,
+    "搭褲": 0.8213980666825194,
+    "內搭褲": 0.7781689287732974,
+    "學習褲": 0.7780702565779052
+}
 ```
 
 ### /update_ckip_dict
@@ -73,8 +80,22 @@ methods=["POST"]
 ```
 
 #### return 
+example 
+word : 長褲
+topk : 10
 ```
-"synonyms" : a list has topk  synonyms of the word , each element contain string and value, the value means how similar between them. If return list is empty, maybe the word is not in our vocabs or the topk is not an integer.
+{
+    "打底褲": 0.9404406547546387,
+    "童裝": 0.9391651153564453,
+    "嬰兒褲": 0.8969577550888062,
+    "兒童褲": 0.8661098480224609,
+    "專用褲": 0.86543869972229,
+    "毛線": 0.812707781791687,
+    "針織": 0.8034014105796814,
+    "兒童圍兜": 0.7960524559020996,
+    "大款": 0.7885699272155762,
+    "印刷": 0.7802867293357849
+}
 ```
 
 ### /train_word2vec

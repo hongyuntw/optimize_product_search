@@ -10,11 +10,11 @@ import gdown
 import sys
 import argparse
 import prepare_data
-from train_word2vec import train_word2vec
-from train_bert import train_bert
+from train import train_word2vec , train_bert
 
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 
 @app.route('/')
@@ -32,9 +32,7 @@ def product_keywords():
     product_name = request.form.get('productName')
     keywords = get_keywords(product_name)
     return jsonify(
-        {
-            "keywords": keywords
-        }
+        dict(keywords)
     )
 
 
@@ -96,10 +94,9 @@ def get_synonyms():
     synonyms = predict.get_synonyms(word,topk)
 
     return jsonify(
-        {
-            "synonyms": synonyms
-        }
+        dict(synonyms)
     )
+
 
 
 def get_keywords(product_name):

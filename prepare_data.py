@@ -67,7 +67,7 @@ def get_train_data_base_on_file():
     
 
 
-
+# here is update ckip dict base on file
 
 def update_ckip_dict():
     # with open('./train_data/ckip_word_dict.pkl', 'rb') as f:

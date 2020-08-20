@@ -5,7 +5,11 @@ from torch.utils.data import DataLoader
 from transformers import BertForSequenceClassification
 from torch import nn
 from prepare_data import get_train_data
-import  numpy as np
+import numpy as np
+from gensim.models import Word2Vec
+import gensim
+import pickle
+
 
 def train_bert():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -122,5 +126,31 @@ def train_bert():
             print(f'\rEpoch [{epoch+1}/{EPOCHS}] {i}/{len(trainloader)} Loss: {running_loss:.4f} Acc : {(correct/total):.3f}', end='')
 
             
-        torch.save(model.state_dict(),check_point)
+        torch.save(model.state_dict(), check_point)
+        
 
+
+def train_word2vec():
+    try:
+        from globals import wordmodel
+        train_corpus = []
+        with open('./train_data/word2vec_train_corpus.pkl', 'rb') as f:
+            train_corpus = pickle.load(f)
+        new_wordmodel = Word2Vec(train_corpus, size=300, iter=10, sg=1, min_count=0, hs=1, window=10)
+        new_wordmodel.save("./model/wordmodel.model")
+        wordmodel = new_wordmodel
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+
+
+
+def re_tokenize_all():
+    # 重新斷詞
+    # save 新的 word2vec_train_corpus
+    
+    # 重新train word2vec
+    train_word2vec()
+    return 
