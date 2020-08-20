@@ -69,7 +69,7 @@ def get_train_data_base_on_file():
 
 # here is update ckip dict base on file
 
-def update_ckip_dict():
+def get_ckip_dict_base_on_file():
     # with open('./train_data/ckip_word_dict.pkl', 'rb') as f:
     #     ckip_word_dict = pickle.load(f)
     ckip_word_dict = {}
@@ -87,7 +87,7 @@ def update_ckip_dict():
     train_data = get_train_data()
     for data in train_data:
         product_name , token , label = data
-        if token == '' or len(token)>4 or re.match("^[A-Za-z0-9]*$", token) or len(token) <2 :
+        if token == '' or len(token)>4 or re.match("^[A-Za-z0-9]*$", token) or len(token) <2 or token.isnumeric() :
             continue
         if token in ckip_word_dict:
             ckip_word_dict[token] += 1
@@ -101,24 +101,53 @@ def update_ckip_dict():
     return ckip_word_dict
 
 
-def update_train_data():
-    
+
+
+
+def save_product_tokens(product_name,tokens):
+    # update train_data
     try:
-        # load old train_data
         train_data = get_train_data()
+        
+        # update ckip wrod dict
+        ckip_word_dict = {}
+        with open('./train_data/ckip_word_dict.pkl', 'rb') as f:
+            ckip_word_dict = pickle.load(f)
 
-        #  update train_data
 
-        # save in file
+        for key, value in tokens.items():
+            # update ckip word dict
+            if not (key == '' or len(key)>4 or re.match("^[A-Za-z0-9]*$", key) or len(key) <2 or key.isnumeric()) :
+                if key in ckip_word_dict:
+                    ckip_word_dict[key] += 1
+                else:
+                    ckip_word_dict[key] = 1
+            # update train_data
+            train_data.append((product_name, key, int(value)))
+            print((product_name, key, int(value)))
+            
+        from ckiptagger import construct_dictionary
+        globals.dictionary = construct_dictionary(ckip_word_dict)
+        # save to local
         with open('./train_data/train_data.pkl', 'wb') as f:
             pickle.dump(train_data, f, pickle.HIGHEST_PROTOCOL)
+        with open('./train_data/ckip_word_dict.pkl', 'wb') as f:
+            pickle.dump(ckip_word_dict, f, pickle.HIGHEST_PROTOCOL)
+        
         return True
-    
     except Exception as e:
         print(e)
         return False
         
     
 
-
-    
+def add_product(isbn, product_name, keywords, category):
+    try:
+        # update product csv
+        df = pd.read_csv('./train_data/e7Line商品.csv')
+        df.loc[df.index[-1]+1] = [str(isbn),str(product_name),str(keywords),str(category)]
+        df.to_csv('./train_data/e7Line商品.csv', index=False)
+        return True
+    except Exception as e:
+        print(e)
+        return False    

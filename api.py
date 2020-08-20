@@ -11,7 +11,8 @@ import sys
 import argparse
 import prepare_data
 from train import train_word2vec , train_bert
-
+import json
+from prepare_data import save_product_tokens , add_product
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -50,10 +51,46 @@ def product_tokens():
         }
     )
 
-@app.route("/update_ckip_dict", methods=["POST"])
-def update_ckip_dict():
 
-    ckip_word_dict = prepare_data.update_ckip_dict()
+@app.route("/save_product_tokens", methods=["POST"])
+def save_product_and_tokens_api():
+    product_name = request.form.get('productName')
+    tokens = request.form.get('tokens')
+    tokens = json.loads(tokens)
+    print(tokens,type(tokens))
+    print(product_name,type(product_name))
+    
+    success = save_product_tokens(product_name,tokens)
+
+    return jsonify(
+        {
+            "success" : success,
+        }
+    )
+
+
+@app.route("/add_product", methods=["POST"])
+def add_product_api():
+    product_name = request.form.get('productName')
+    keywords = request.form.get('keywords')
+    isbn = request.form.get('isbn')
+    category = request.form.get('category')
+    print(isbn,product_name, keywords,category)
+    
+    success = add_product(isbn,product_name, keywords,category)
+
+    return jsonify(
+        {
+            "success" : success,
+        }
+    )
+
+
+
+@app.route("/get_ckip_dict", methods=["POST"])
+def get_ckip_dict_base_on_file_api():
+
+    ckip_word_dict = prepare_data.get_ckip_dict_base_on_file()
 
     return jsonify(
         {
@@ -85,17 +122,17 @@ def train_bert_api():
 @app.route("/get_synonyms", methods=["POST"])
 def get_synonyms():
 
-    word = request.form.get('word')
+    words = request.form.get('words')
+    words = json.loads(words)
     topk = request.form.get('topk')
-    print(word, topk)
-
-    word = utils.process_text(word)
-    
-    synonyms = predict.get_synonyms(word,topk)
+    print(words, topk)
+    synonyms = predict.get_synonyms(words,topk)
 
     return jsonify(
-        dict(synonyms)
+        dict(sorted(dict(synonyms).items(), key=lambda x: x[1], reverse=True))
     )
+
+
 
 
 

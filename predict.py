@@ -178,12 +178,21 @@ def find_product_keywords(p_name):
 
 
 
-def get_synonyms(word, topk):
+def get_synonyms(words, topk):
     from globals import wordmodel
     try:
+        all_synonyms = []
         topk = int(topk)
-        synonyms = wordmodel.wv.most_similar(word, topn=topk)
-        return synonyms
+        for word in words:
+            try:
+                word = utils.process_text(word)
+                synonyms = wordmodel.wv.most_similar(word, topn=topk)
+                for s in synonyms:
+                    all_synonyms.append(s)
+            except Exception as e:
+                print(e)
+                pass
+        return all_synonyms
     except Exception as e:
         print(e)
         return []
