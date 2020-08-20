@@ -85,7 +85,20 @@ methods=["POST"]
 ```
 None
 ```
+#### return 
+```
+"success" : boolean
+```
 
+
+### /train_bert
+use /train_data/train_data.pkl to re-train a bert classifier and save it to /model/product_weight_model.pkl
+
+methods=["POST"]
+#### parameters
+```
+None
+```
 #### return 
 ```
 "success" : boolean

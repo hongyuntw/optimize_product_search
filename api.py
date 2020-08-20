@@ -11,6 +11,7 @@ import sys
 import argparse
 import prepare_data
 from train_word2vec import train_word2vec
+from train_bert import train_bert
 
 
 app = Flask(__name__)
@@ -69,6 +70,16 @@ def train_word2vec_api():
     return jsonify(
         {
             "success": success
+        }
+    )
+
+
+@app.route("/train_bert", methods=["POST"])
+def train_bert_api():
+    train_bert()
+    return jsonify(
+        {
+            "success": True
         }
     )
 

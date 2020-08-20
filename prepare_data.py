@@ -13,8 +13,15 @@ def clean_supplier_name(text):
         text = text[:pos]
     return text
 
-
 def get_train_data():
+    train_data = []
+    with open('./train_data/train_data.pkl', 'rb') as f:
+        train_data = pickle.load(f)
+    return train_data
+
+
+
+def get_train_data_base_on_file():
     train_data = []
     base_path = './train_data/'
     for filename in globals.train_data_filenames:
@@ -92,6 +99,24 @@ def update_ckip_dict():
         pickle.dump(ckip_word_dict, f, pickle.HIGHEST_PROTOCOL)
 
     return ckip_word_dict
+
+
+def update_train_data():
+    
+    try:
+        # load old train_data
+        train_data = get_train_data()
+
+        #  update train_data
+
+        # save in file
+        with open('./train_data/train_data.pkl', 'wb') as f:
+            pickle.dump(train_data, f, pickle.HIGHEST_PROTOCOL)
+        return True
+    
+    except Exception as e:
+        print(e)
+        return False
         
     
 
