@@ -159,4 +159,46 @@ def add_product(isbn, product_name, keywords, category):
         return True
     except Exception as e:
         print(e)
-        return False    
+        return False
+        
+def add_bad_token(tokens):
+    try:
+        bad_token_list = []
+        with open('./train_data/bad_token_list.pkl', 'rb') as f:
+            bad_token_list = pickle.load(f)
+
+        for token in tokens:
+            token = str(token)
+            token = token.replace(' ','')
+            if token not in bad_token_list and token != '':
+                bad_token_list.append(token)
+
+        with open('./train_data/bad_token_list.pkl', 'wb') as f:
+            pickle.dump(bad_token_list, f, pickle.HIGHEST_PROTOCOL)
+        return bad_token_list
+
+    except Exception as e:
+        print(e)
+        return bad_token_list
+
+
+def add_bad_pos(_pos):
+    try:
+        bad_pos_list = []
+        with open('./train_data/bad_pos_list.pkl', 'rb') as f:
+            bad_pos_list = pickle.load(f)
+
+        for _p in _pos:
+            _p = str(_p)
+            _p = _p.replace(' ','')
+            if _p not in bad_pos_list and _p != '':
+                bad_pos_list.append(_pos)
+
+        with open('./train_data/bad_pos_list.pkl', 'wb') as f:
+            pickle.dump(bad_pos_list, f, pickle.HIGHEST_PROTOCOL)
+        return bad_pos_list
+
+    except Exception as e:
+        print(e)
+        return bad_pos_list
+    

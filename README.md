@@ -75,7 +75,7 @@ a dictionary
 methods=["POST"]
 #### parameters
 ```
-"words" : list of string,
+"words" : list of string, or string
 "topk" : int,
 ```
 
@@ -168,4 +168,91 @@ category : string
 #### return 
 ```
 "success" : boolean
+```
+
+
+### /re_tokenize_all
+methods=["POST"]
+
+功能是，當斷詞詞典搜集夠了，到一定程度時，可以對所有商品重新斷詞（照理來講會斷得更好），得到新的斷詞結果之後，會儲存下來。
+位置在
+```
+pos result:
+'./train_data/all_products_tokens_without_punck.pkl'
+
+token result:
+'./train_data/all_products_pos_without_punck.pkl'
+
+此結果會被應用到 update train_corpus上面。
+```
+
+此api斷詞結束後會自行call train_word2vec，優化word2vec model。
+
+#### parameters
+```
+None
+```
+#### return 
+```
+"success" : boolean
+```
+
+
+### /add_bad_tokens
+methods=["POST"]
+
+新增bad tokens to list
+
+#### parameters
+```
+bad_tokens : list of string or single string
+```
+#### return 
+```
+bad token list in server
+[
+    "顆",
+    "粒",
+    "入",
+    "ml",
+    "g",
+    "cm",
+    "ml3",
+    "gx",
+    "x6",
+    "gb",
+    "2l",
+    "ml1",
+    "x8",
+    "x1",
+    "kg",
+    "cc",
+    "km",
+    "tb",
+    "mml",
+    "None"
+]
+```
+
+
+
+### /add_bad_pos
+methods=["POST"]
+
+新增bad pos to list
+
+#### parameters
+```
+bad_pos : list of string or single string
+```
+#### return 
+```
+bad pos list in server
+[
+    "Nf",
+    "Neu",
+    "Nc",
+    "Nb",
+    "WHITESPACE"
+]
 ```

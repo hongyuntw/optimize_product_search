@@ -12,17 +12,25 @@ from torch import nn
 import gensim
 from utils import tokenlize
 import numpy as np
+import pickle
 
 
 
-
-bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
-bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb' ,'入組']
+# bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
+# bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb' ,'入組']
 LM_PATH = './chinese_wwm_pytorch/'
 
 
 
 def get_product_word_weight(t, p, test_product_name):
+
+    bad_token_list = []
+    with open('./train_data/bad_token_list.pkl', 'rb') as f:
+        bad_token_list = pickle.load(f)
+
+    bad_pos_list = []
+    with open('./train_data/bad_pos_list.pkl', 'rb') as f:
+        bad_pos_list = pickle.load(f)
     from globals import check_point , wordmodel
     tokenizer = BertTokenizer.from_pretrained(LM_PATH)
     max_seq_length = 50
@@ -181,14 +189,19 @@ def find_product_keywords(p_name):
 def get_synonyms(words, topk):
     from globals import wordmodel
     try:
-        all_synonyms = []
+        all_synonyms = {}
         topk = int(topk)
         for word in words:
+            # print(word)
             try:
                 word = utils.process_text(word)
+                word = word.replace(' ','')
                 synonyms = wordmodel.wv.most_similar(word, topn=topk)
                 for s in synonyms:
-                    all_synonyms.append(s)
+                    if s in all_synonyms:
+                        all_synonyms[s[0]] += s[1]
+                    else:
+                        all_synonyms[s[0]] = s[1]
             except Exception as e:
                 print(e)
                 pass

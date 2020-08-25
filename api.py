@@ -12,7 +12,8 @@ import argparse
 import prepare_data
 from train import train_word2vec , train_bert , re_tokenize_all
 import json
-from prepare_data import save_product_tokens , add_product
+from prepare_data import save_product_tokens , add_product , add_bad_pos , add_bad_token
+import ast
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -127,21 +128,50 @@ def train_bert_api():
         }
     )
 
+@app.route("/add_bad_pos", methods=["POST"])
+def add_bad_pos_api():
+    be_added_pos = request.form.get('bad_pos')
+    try:
+        be_added_pos = ast.literal_eval(be_added_pos)
+    except Exception as e:
+        print(e)
+        be_added_pos = [be_added_pos]
+    print(be_added_pos)
+    bad_pos_list = add_bad_pos(be_added_pos)
+    return jsonify(
+        bad_pos_list
+    )
+
+@app.route("/add_bad_tokens", methods=["POST"])
+def add_bad_token_api():
+    be_added_token = request.form.get('bad_tokens')
+    try:
+        be_added_token = ast.literal_eval(be_added_token)
+    except Exception as e:
+        print(e)
+        be_added_token = [be_added_token]
+    print(be_added_token)
+    bad_token_list = add_bad_token(be_added_token)
+    return jsonify(
+        bad_token_list
+    )
+
 
 @app.route("/get_synonyms", methods=["POST"])
 def get_synonyms():
-
     words = request.form.get('words')
-    words = json.loads(words)
+    try:
+        words = ast.literal_eval(words)
+    except Exception as e:
+        print(e)
+        words = [words]
     topk = request.form.get('topk')
     print(words, topk)
     synonyms = predict.get_synonyms(words,topk)
 
     return jsonify(
-        dict(sorted(dict(synonyms).items(), key=lambda x: x[1], reverse=True))
+        dict(sorted(synonyms.items(), key=lambda x: x[1], reverse=True))
     )
-
-
 
 
 

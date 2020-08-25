@@ -137,7 +137,7 @@ def train_word2vec():
         train_corpus = []
         with open('./train_data/word2vec_train_corpus.pkl', 'rb') as f:
             train_corpus = pickle.load(f)
-        new_wordmodel = Word2Vec(train_corpus, size=300, iter=10, sg=1, min_count=0, hs=1, window=10)
+        new_wordmodel = Word2Vec(train_corpus, size=300, iter=10, sg=1, min_count=0, hs=1, window=20)
         new_wordmodel.save("./model/wordmodel.model")
         wordmodel = new_wordmodel
         return True
@@ -150,7 +150,7 @@ def get_keywords(text):
     keywords = []
     text = str(text)
     text = strQ2B(text)
-    text = text.replace('/','\\').replace('NULL','').replace('nan','').replace(' ','')
+    text = text.replace('/','\\').replace('NULL','').replace('nan','').replace(' ','').replace('None','')
     text = text.lower()
     
     if text == '':
@@ -185,8 +185,16 @@ def re_tokenize_all():
 
         train_corpus = []
 
-        bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
-        bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb']
+        bad_token_list = []
+        with open('./train_data/bad_token_list.pkl', 'rb') as f:
+            bad_token_list = pickle.load(f)
+
+        bad_pos_list = []
+        with open('./train_data/bad_pos_list.pkl', 'rb') as f:
+            bad_pos_list = pickle.load(f)
+
+        # bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
+        # bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb']
 
         for index, row in df.iterrows():
             keywords = get_keywords(row['keyword'])
