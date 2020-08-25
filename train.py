@@ -167,7 +167,7 @@ def get_keywords(text):
 def re_tokenize_all():
     try:
         # 重新斷詞
-        df = pd.read_excel('./train_data/e7Line商品.csv')
+        df = pd.read_csv('./train_data/e7Line商品.csv')
         all_product_names = df['name'].apply(process_text).tolist()
         print(len(all_product_names))
 
