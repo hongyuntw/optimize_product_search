@@ -10,7 +10,7 @@ def remove_punctuation(text):
 def process_text(text):
     text = str(text)
     text = strQ2B(text)
-    text = text.replace(u'\u3000', u' ').replace(u'\xa0', u' ').replace(r'\r\n','')
+    text = text.replace(u'\u3000', u' ').replace(u'\xa0', u' ').replace(r'\r\n','').replace('\n','')
     text = text.lower()
     text = remove_punctuation(text)
     return text
@@ -58,10 +58,6 @@ def softmax(x):
     
 
 
-
-
-
-
 # ckip part
 def tokenlize(text):
     tokens = globals.ws([text],recommend_dictionary = globals.dictionary)
@@ -72,7 +68,7 @@ def tokenlize(text):
     for i in range(len(tokens[0])):
         _t = tokens[0][i]
         _p = word_pos[0][i]
-        _t = _t.replace(' ', '')
+        _t = _t.replace(' ', '').replace('\n','')
         if _t == '':
             continue
         new_tokens.append(_t)
