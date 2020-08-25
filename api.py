@@ -10,7 +10,7 @@ import gdown
 import sys
 import argparse
 import prepare_data
-from train import train_word2vec , train_bert
+from train import train_word2vec , train_bert , re_tokenize_all
 import json
 from prepare_data import save_product_tokens , add_product
 
@@ -102,6 +102,15 @@ def get_ckip_dict_base_on_file_api():
 @app.route("/train_word2vec", methods=["POST"])
 def train_word2vec_api():
     success = train_word2vec()
+    return jsonify(
+        {
+            "success": success
+        }
+    )
+
+@app.route("/re_tokenize_all", methods=["POST"])
+def re_tokenize_all_api():
+    success = re_tokenize_all()
     return jsonify(
         {
             "success": success

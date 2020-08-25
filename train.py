@@ -10,7 +10,7 @@ from gensim.models import Word2Vec
 import gensim
 import pandas as pd
 import pickle
-from utils import process_text
+from utils import process_text , strQ2B , tokenlize
 
 
 def train_bert():
@@ -165,44 +165,48 @@ def get_keywords(text):
 
 
 def re_tokenize_all():
-    # 重新斷詞
-    df = pd.read_excel('./train_data/e7Line商品.csv')
-    all_product_names = df['name'].apply(process_text).tolist()
-    print(len(all_product_names))
+    try:
+        # 重新斷詞
+        df = pd.read_excel('./train_data/e7Line商品.csv')
+        all_product_names = df['name'].apply(process_text).tolist()
+        print(len(all_product_names))
 
-    all_products_tokens = []
-    all_products_pos = []
-    for text in all_product_names:
-        t, p  = tokenlize(text)
-        all_products_tokens.append(t)
-        all_products_pos.append(p)
-    with open('./train_data/all_products_tokens_without_punck.pkl', 'wb') as f:
-        pickle.dump(all_products_tokens, f, pickle.HIGHEST_PROTOCOL)
-    with open('./train_data/all_products_pos_without_punck.pkl', 'wb') as f:
-        pickle.dump(all_products_pos, f, pickle.HIGHEST_PROTOCOL)
+        all_products_tokens = []
+        all_products_pos = []
+        for text in all_product_names:
+            t, p  = tokenlize(text)
+            all_products_tokens.append(t)
+            all_products_pos.append(p)
+        with open('./train_data/all_products_tokens_without_punck.pkl', 'wb') as f:
+            pickle.dump(all_products_tokens, f, pickle.HIGHEST_PROTOCOL)
+        with open('./train_data/all_products_pos_without_punck.pkl', 'wb') as f:
+            pickle.dump(all_products_pos, f, pickle.HIGHEST_PROTOCOL)
 
 
-    train_corpus = []
+        train_corpus = []
 
-    bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
-    bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb']
+        bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
+        bad_token_list = ['顆', '粒' , '入' , 'ml' , 'g' , 'cm' , 'ml3' , 'gx' , 'x6' , 'gb' , '2l' , 'ml1' , 'x8' , 'x1' , 'kg' , 'cc' , 'km' , 'tb']
 
-    for index, row in df.iterrows():
-        keywords = get_keywords(row['keyword'])
-        tmp_tokens = []
-        for token in all_products_tokens[index]:
-            token = token.replace(' ','').replace('\t','').replace('  ','')
-            # 不是空的 ， 不在不重要的list中 ， 長度至少是2 ， 不是數字
-            if token != '' and token not in bad_token_list and len(token)>1 and (not token.isnumeric()) :
-                tmp_tokens.append(token)
-        train_corpus.append(tmp_tokens + keywords)
+        for index, row in df.iterrows():
+            keywords = get_keywords(row['keyword'])
+            tmp_tokens = []
+            for token in all_products_tokens[index]:
+                token = token.replace(' ','').replace('\t','').replace('  ','')
+                # 不是空的 ， 不在不重要的list中 ， 長度至少是2 ， 不是數字
+                if token != '' and token not in bad_token_list and len(token)>1 and (not token.isnumeric()) :
+                    tmp_tokens.append(token)
+            train_corpus.append(tmp_tokens + keywords)
 
-    print(len(train_corpus))
+        print(len(train_corpus))
 
-    # save 新的 word2vec_train_corpus
-    with open('./train_data/word2vec_train_corpus.pkl', 'wb') as f:
-        pickle.dump(train_corpus, f, pickle.HIGHEST_PROTOCOL)
+        # save 新的 word2vec_train_corpus
+        with open('./train_data/word2vec_train_corpus.pkl', 'wb') as f:
+            pickle.dump(train_corpus, f, pickle.HIGHEST_PROTOCOL)
 
-    # 重新train word2vec
-    train_word2vec()
-    return 
+        # 重新train word2vec
+        train_word2vec()
+        return True
+    except Exception as e:
+        print(e)
+        return False
