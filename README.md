@@ -205,7 +205,8 @@ methods=["POST"]
 
 #### parameters
 ```
-bad_tokens : list of string or single string
+bad_tokens : list of string or single string 
+ex: ['mg','cm'] or cm
 ```
 #### return 
 ```
