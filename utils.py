@@ -75,3 +75,19 @@ def tokenlize(text):
         new_pos.append(_p)
 
     return new_tokens, new_pos
+
+
+def mapping_same_word(list_of_word):
+    if isinstance(list_of_word, list): 
+        for i in range(len(list_of_word)):
+            word = list_of_word[i]
+            if word in globals.same_word_dict:
+                list_of_word[i] = globals.same_word_dict[word]
+            else:
+                list_of_word[i] = list_of_word[i].lower()
+        return list_of_word
+    else:
+        list_of_word = list_of_word.lower()
+        if list_of_word in globals.same_word_dict:
+            return globals.same_word_dict[list_of_word]
+        return list_of_word

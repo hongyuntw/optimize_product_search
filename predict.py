@@ -13,7 +13,7 @@ import gensim
 from utils import tokenlize
 import numpy as np
 import pickle
-
+from utils import mapping_same_word
 
 
 # bad_pos_list = ['Nf','Neu','Nc','Nb','WHITESPACE']
@@ -160,6 +160,7 @@ def find_product_keywords(p_name):
         
         weight = pred[k][1]
         word = t[k]
+        word = mapping_same_word(word)
         # print(weight)
         
         if word in wordmodel.wv.vocab:
@@ -195,7 +196,8 @@ def get_synonyms(words, topk):
             # print(word)
             try:
                 word = utils.process_text(word)
-                word = word.replace(' ','')
+                word = word.replace(' ', '')
+                word = mapping_same_word(word)
                 synonyms = wordmodel.wv.most_similar(word, topn=topk)
                 for s in synonyms:
                     if s in all_synonyms:

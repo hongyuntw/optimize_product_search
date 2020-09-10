@@ -257,3 +257,25 @@ bad pos list in server
     "WHITESPACE"
 ]
 ```
+
+
+### /add_sameword
+methods=["POST"]
+
+新增相似詞／同義字 到詞典中
+
+#### parameters
+```
+word : string
+keyword : string
+
+ex: 
+word : 巧克
+keyword : 巧克力
+
+上面意思就是指巧克都會被轉換成巧克力
+```
+#### return 
+```
+"success" : boolean
+```

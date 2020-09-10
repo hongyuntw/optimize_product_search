@@ -3,6 +3,8 @@ from ckiptagger import NER, POS, WS , data_utils , construct_dictionary
 import pandas as pd
 import gensim
 import pickle
+import csv
+
 
 def initialize():
     global ws
@@ -26,3 +28,25 @@ def initialize():
 
     global train_data_filenames
     train_data_filenames = ['product_tokens1.txt']
+
+    global same_word_dict
+    same_word_dict = {}
+    with open('./train_data/同義詞.csv', newline='') as csvFile:
+        rows = csv.reader(csvFile)
+        count = 0
+        for row in rows:
+            if count == 0:
+                count += 1
+                continue
+            c = 0
+            keyword = ''
+            for word in row:
+                if c == 0 or c == 1:
+                    c += 1
+                    continue
+                word = word.lower()
+                if c == 2 and word != '':
+                    c += 1
+                    keyword = word
+                if word not in same_word_dict and word != '':
+                    same_word_dict[word] = keyword.lower()

@@ -10,7 +10,7 @@ from gensim.models import Word2Vec
 import gensim
 import pandas as pd
 import pickle
-from utils import process_text , strQ2B , tokenlize
+from utils import process_text , strQ2B , tokenlize , mapping_same_word
 
 
 def train_bert():
@@ -34,7 +34,7 @@ def train_bert():
     for data in train_data:
         product_name , token , label = data
         label = int(label)
-
+        token = mapping_same_word(token)
         product_name = process_text(product_name)
         input_ids = tokenizer.encode(token, product_name)
         if len(input_ids) >= max_seq_length:
@@ -129,8 +129,6 @@ def train_bert():
             
         torch.save(model.state_dict(), check_point)
         
-
-
 def train_word2vec():
     try:
         from globals import wordmodel
@@ -158,6 +156,7 @@ def get_keywords(text):
     keys = text.split("\\")
     # print(keys)
     for key in keys:
+        key = mapping_same_word(key)
         if key not in keywords and key != '' and key != ' ' and len(key) > 1:
             keywords.append(key)
 
@@ -200,7 +199,8 @@ def re_tokenize_all():
             keywords = get_keywords(row['keyword'])
             tmp_tokens = []
             for token in all_products_tokens[index]:
-                token = token.replace(' ','').replace('\t','').replace('  ','')
+                token = token.replace(' ', '').replace('\t', '').replace('  ', '')
+                token = mapping_same_word(token)
                 # 不是空的 ， 不在不重要的list中 ， 長度至少是2 ， 不是數字
                 if token != '' and token not in bad_token_list and len(token)>1 and (not token.isnumeric()) :
                     tmp_tokens.append(token)

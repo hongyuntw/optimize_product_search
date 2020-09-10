@@ -12,8 +12,9 @@ import argparse
 import prepare_data
 from train import train_word2vec , train_bert , re_tokenize_all
 import json
-from prepare_data import save_product_tokens , add_product , add_bad_pos , add_bad_token
+from prepare_data import save_product_tokens , add_product , add_bad_pos , add_bad_token , add_word_in_same_word_dict
 import ast
+from utils import mapping_same_word
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -33,6 +34,7 @@ def product_keywords():
     print(request.form.get('productName'))
     product_name = request.form.get('productName')
     keywords = get_keywords(product_name)
+
     return jsonify(
         dict(keywords)
     )
@@ -79,6 +81,22 @@ def add_product_api():
     print(isbn,product_name, keywords,category)
     
     success = add_product(isbn,product_name, keywords,category)
+
+    return jsonify(
+        {
+            "success" : success,
+        }
+    )
+
+
+@app.route("/add_sameword", methods=["POST"])
+def add_same_word_api():
+    word = request.form.get('word')
+    keyword = request.form.get('keyword')
+
+    print(word,keyword)
+    
+    success = add_word_in_same_word_dict(word,keyword)
 
     return jsonify(
         {
@@ -165,12 +183,13 @@ def get_synonyms():
     except Exception as e:
         print(e)
         words = [words]
+    words = mapping_same_word(words)
     topk = request.form.get('topk')
     print(words, topk)
     synonyms = predict.get_synonyms(words,topk)
 
     return jsonify(
-        dict(sorted(synonyms.items(), key=lambda x: x[1], reverse=True))
+        dict((sorted(synonyms.items(), key=lambda x: x[1], reverse=True)))
     )
 
 

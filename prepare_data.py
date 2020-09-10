@@ -3,6 +3,7 @@ import pickle
 import pandas as pd
 import re
 import globals
+from utils import mapping_same_word
 
 def clean_supplier_name(text):
     text = str(text)
@@ -11,6 +12,7 @@ def clean_supplier_name(text):
     pos = text.find('(')
     if pos != -1:
         text = text[:pos]
+    text = mapping_same_word(text)
     return text
 
 def get_train_data():
@@ -54,6 +56,7 @@ def get_train_data_base_on_file():
                     token_labels = token_label.split()    
                     for i in range(len(tokens)):
                         token = tokens[i]
+                        token = mapping_same_word(token)
                         try:
                             label = token_labels[i]
                         except:
@@ -88,6 +91,7 @@ def get_ckip_dict_base_on_file():
         for word in supplier_words:
             if len(word) > 5:
                 continue
+            word = mapping_same_word(word)
             if word in ckip_word_dict:
                 ckip_word_dict[word] += 1
             else:
@@ -98,6 +102,7 @@ def get_ckip_dict_base_on_file():
             product_name , token , label = data
             if token == '' or len(token)>4 or re.match("^[A-Za-z0-9]*$", token) or len(token) <2 or token.isnumeric() :
                 continue
+            token = mapping_same_word(token)
             if token in ckip_word_dict:
                 ckip_word_dict[token] += 1
             else:
@@ -127,6 +132,7 @@ def save_product_tokens(product_name,tokens):
         for key, value in tokens.items():
             # update ckip word dict
             if not (key == '' or len(key)>4 or re.match("^[A-Za-z0-9]*$", key) or len(key) <2 or key.isnumeric()) :
+                key = mapping_same_word(key)
                 if key in ckip_word_dict:
                     ckip_word_dict[key] += 1
                 else:
@@ -201,4 +207,16 @@ def add_bad_pos(_pos):
     except Exception as e:
         print(e)
         return bad_pos_list
+
+def add_word_in_same_word_dict(word, keyword):
+    try:
+        word = word.lower()
+        keyword = keyword.lower()
+        if word in globals.same_word_dict:
+            return True
+        globals.same_word_dict[word] = keyword
+        return True
+    except Exception as e:
+        print(e)
+        return False
     
