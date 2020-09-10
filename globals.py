@@ -31,22 +31,30 @@ def initialize():
 
     global same_word_dict
     same_word_dict = {}
-    with open('./train_data/同義詞.csv', newline='') as csvFile:
-        rows = csv.reader(csvFile)
-        count = 0
-        for row in rows:
-            if count == 0:
-                count += 1
-                continue
-            c = 0
-            keyword = ''
-            for word in row:
-                if c == 0 or c == 1:
-                    c += 1
+    try:
+        with open('./train_data/same_word_dict.pkl', 'rb') as f:
+            same_word_dict = pickle.load(f)
+    except Exception as e:
+        print(e)
+
+        with open('./train_data/同義詞.csv', newline='') as csvFile:
+            rows = csv.reader(csvFile)
+            count = 0
+            for row in rows:
+                if count == 0:
+                    count += 1
                     continue
-                word = word.lower()
-                if c == 2 and word != '':
-                    c += 1
-                    keyword = word
-                if word not in same_word_dict and word != '':
-                    same_word_dict[word] = keyword.lower()
+                c = 0
+                keyword = ''
+                for word in row:
+                    if c == 0 or c == 1:
+                        c += 1
+                        continue
+                    word = word.lower()
+                    if c == 2 and word != '':
+                        c += 1
+                        keyword = word
+                    if word not in same_word_dict and word != '':
+                        same_word_dict[word] = keyword.lower()
+        with open('./train_data/same_word_dict.pkl', 'wb') as f:
+            pickle.dump(same_word_dict, f, pickle.HIGHEST_PROTOCOL)

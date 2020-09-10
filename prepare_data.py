@@ -215,6 +215,8 @@ def add_word_in_same_word_dict(word, keyword):
         if word in globals.same_word_dict:
             return True
         globals.same_word_dict[word] = keyword
+        with open('./train_data/same_word_dict.pkl', 'wb') as f:
+            pickle.dump(globals.same_word_dict, f, pickle.HIGHEST_PROTOCOL)
         return True
     except Exception as e:
         print(e)

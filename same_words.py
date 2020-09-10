@@ -46,6 +46,7 @@ def add_word_in_same_word_dict(word, keyword):
     except:
         return False
 
+print(same_word_dict)
 print(mapping_same_word(['摩甲刀', '修甲片']))
 print(mapping_same_word('搓刀'))
 
